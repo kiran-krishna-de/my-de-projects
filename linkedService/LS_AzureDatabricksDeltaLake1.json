@@ -1,0 +1,20 @@
+{
+	"name": "LS_AzureDatabricksDeltaLake1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricksDeltaLake",
+		"typeProperties": {
+			"domain": "https://adb-1629340743053338.18.azuredatabricks.net",
+			"clusterId": "0930-155038-tjko99k1",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AKV_krishh",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DBW-access-token"
+			}
+		}
+	}
+}

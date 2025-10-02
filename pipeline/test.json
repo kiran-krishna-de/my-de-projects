@@ -3,108 +3,222 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy ACC and Mapping tables",
-				"type": "ForEach",
+				"name": "update new CDC",
+				"type": "Copy",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "[\n  {\n\n   \"source_Container\":\"bronze\",\n   \"source_directory\":\"department\",\n   \"source_file\":\"Department.csv\",\n   \"Dest_Container\":\"silver\"\n   \"Dest_directory\":\"Dept\",\n   \"Dest_file\":\"Department.csv\"\n   \n  },\n\n  {\n   \"source_Container\":\"bronze\",\n   \"source_directory\":\"Employee\",\n   \"source_file\":\"Employee_data.csv\",\n   \"Dest_Container\":\"silver\"\n   \"Dest_directory\":\"Emp\",\n   \"Dest_file\":\"Employee_data.csv\"\n   \n  }\n]",
-						"type": "Expression"
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
-					"activities": [
-						{
-							"name": "Copy data1",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
 								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
+									"name": "Item_Identifier",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
+									"name": "Item_Identifier",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
-							"inputs": [
-								{
-									"referenceName": "DS_ADLS_Param",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@item().source_Containe",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@item().source_directory",
-											"type": "Expression"
-										},
-										"file": {
-											"value": "@item().source_file",
-											"type": "Expression"
-										}
-									}
+							{
+								"source": {
+									"name": "Item_Weight",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Weight",
+									"type": "String",
+									"physicalType": "String"
 								}
-							],
-							"outputs": [
-								{
-									"referenceName": "DS_ADLS_Param",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@item().Dest_Container",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@item().Dest_directory",
-											"type": "Expression"
-										},
-										"file": {
-											"value": "@item().Dest_file",
-											"type": "Expression"
-										}
-									}
+							},
+							{
+								"source": {
+									"name": "Item_Fat_Content",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Fat_Content",
+									"type": "String",
+									"physicalType": "String"
 								}
-							]
+							},
+							{
+								"source": {
+									"name": "Item_Visibility",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Visibility",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Type",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_MRP",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_MRP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Outlet_Identifier",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Outlet_Identifier",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Outlet_Establishment_Year",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Outlet_Establishment_Year",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Outlet_Size",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Outlet_Size",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Outlet_Location_Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Outlet_Location_Type",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Outlet_Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Outlet_Type",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_Outlet_Sales",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Outlet_Sales",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
 						}
-					]
-				}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_ADLS_Param",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"directory": "anshh",
+							"file": "BigMart_Sales.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADLS_Param",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"directory": "anshh",
+							"file": "BigMart_Sales.csv"
+						}
+					}
+				]
 			}
 		],
 		"annotations": [],
-		"lastPublishTime": "2025-09-26T14:46:08Z"
+		"lastPublishTime": "2025-10-02T18:13:31Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

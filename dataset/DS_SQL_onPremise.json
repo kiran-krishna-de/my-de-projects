@@ -1,0 +1,13 @@
+{
+	"name": "DS_SQL_onPremise",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_onPremise",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
