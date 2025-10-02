@@ -1,0 +1,28 @@
+{
+	"name": "LS_SFTP",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "DESKTOP-NUHFO2T",
+			"port": 22,
+			"skipHostKeyValidation": false,
+			"hostKeyFingerprint": "ssh-ed25519 32 98:c9:a5:af:e9:84:0a:17:3c:ce:58:1c:44:d8:26:63",
+			"authenticationType": "Basic",
+			"userName": "LENOVO",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AKV_krishh",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "SFTP-password"
+			}
+		},
+		"connectVia": {
+			"referenceName": "IR-SelfHosted",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

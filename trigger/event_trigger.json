@@ -1,0 +1,32 @@
+{
+	"name": "event_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_blob_to_snow",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"input_container": "test",
+					"input_directory": "ilp",
+					"input_file": "Department.csv",
+					"sink_schema": "NESS",
+					"sink_table": "DEPARTMENT"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/test/blobs/ilp/Depart",
+			"blobPathEndsWith": "csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/a71a9271-a8b7-41cc-ad19-ae93a63dea87/resourceGroups/krishna-rg/providers/Microsoft.Storage/storageAccounts/krishblobstore",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

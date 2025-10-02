@@ -1,0 +1,39 @@
+{
+	"name": "Scheduled_tr1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_blob_to_snow",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"input_container": "test",
+					"input_directory": "ilp",
+					"input_file": "Department.csv",
+					"sink_schema": "NESS",
+					"sink_table": "DEPT"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2025-09-23T03:16:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						52
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

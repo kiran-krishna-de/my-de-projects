@@ -1,0 +1,151 @@
+{
+	"name": "copy_from_adls_to tables_diff_DBs",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@json(concat('[\n  {\n    \"source_Container\":\"', pipeline().parameters.source_container, '\",\n    \"source_directory\":\"',pipeline().parameters.source_Dept_directory, '\",\n    \"source_file\":\"',pipeline().parameters.source_Dept_file, '\",\n    \"Dest_DB\":\"',pipeline().parameters.sink_Dept_db_name, '\",\n    \"Dest_seret\":\"',pipeline().parameters.sink_Dept_seret, '\",\n    \"Dest_schema\":\"',pipeline().parameters.sink_Dept_schema, '\",\n    \"Dest_table\":\"',pipeline().parameters.sink_Dept_table, '\"\n  },\n  {\n    \"source_Container\":\"', pipeline().parameters.source_container, '\",\n    \"source_directory\":\"',pipeline().parameters.source_Emp_directory, '\",\n    \"source_file\":\"',pipeline().parameters.source_Emp_file, '\",\n    \"Dest_DB\":\"',pipeline().parameters.sink_Emp_db_name, '\",\n    \"Dest_seret\":\"',pipeline().parameters.sink_Emp_seret, '\",\n    \"Dest_schema\":\"',pipeline().parameters.sink_Emp_schema, '\",\n    \"Dest_table\":\"',pipeline().parameters.sink_Emp_table, '\"\n  }\n]'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_ADLS_Param",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@item().source_Container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@item().source_directory",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@item().source_file",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_SQL_Param",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": {
+											"value": "@item().Dest_schema",
+											"type": "Expression"
+										},
+										"table": {
+											"value": "@item().Dest_table",
+											"type": "Expression"
+										},
+										"database_name": {
+											"value": "@item().Dest_DB",
+											"type": "Expression"
+										},
+										"Secret_name": {
+											"value": "@item().Dest_seret",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"source_container": {
+				"type": "string"
+			},
+			"source_Dept_directory": {
+				"type": "string"
+			},
+			"source_Dept_file": {
+				"type": "string"
+			},
+			"sink_Dept_db_name": {
+				"type": "string"
+			},
+			"sink_Dept_seret": {
+				"type": "string"
+			},
+			"sink_Dept_schema": {
+				"type": "string"
+			},
+			"sink_Dept_table": {
+				"type": "string"
+			},
+			"source_Emp_directory": {
+				"type": "string"
+			},
+			"source_Emp_file": {
+				"type": "string"
+			},
+			"sink_Emp_db_name": {
+				"type": "string"
+			},
+			"sink_Emp_seret": {
+				"type": "string"
+			},
+			"sink_Emp_schema": {
+				"type": "string"
+			},
+			"sink_Emp_table": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-26T14:46:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

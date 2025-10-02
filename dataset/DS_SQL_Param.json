@@ -1,0 +1,47 @@
+{
+	"name": "DS_SQL_Param",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Param",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DB_name": {
+					"value": "@dataset().database_name",
+					"type": "Expression"
+				},
+				"secret_name": {
+					"value": "@dataset().Secret_name",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"schema": {
+				"type": "string"
+			},
+			"table": {
+				"type": "string"
+			},
+			"database_name": {
+				"type": "string"
+			},
+			"Secret_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

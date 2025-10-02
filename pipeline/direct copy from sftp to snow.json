@@ -1,0 +1,133 @@
+{
+	"name": "direct copy from sftp to snow",
+	"properties": {
+		"activities": [
+			{
+				"name": "sftp to snow",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SnowflakeV2Sink",
+						"preCopyScript": {
+							"value": "TRUNCATE TABLE @{pipeline().parameters.schema}.@{pipeline().parameters.table}",
+							"type": "Expression"
+						},
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "LS_blob",
+							"type": "LinkedServiceReference"
+						},
+						"path": "test/staging"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Department_id",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DEPARTMENT_ID"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAME",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SFTP",
+						"type": "DatasetReference",
+						"parameters": {
+							"Directory": {
+								"value": "@concat('/',pipeline().parameters.drive,':/',pipeline().parameters.directory)",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.file",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_snow",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": {
+								"value": "@pipeline().parameters.schema",
+								"type": "Expression"
+							},
+							"table": {
+								"value": "@pipeline().parameters.table",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"directory": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"drive": {
+				"type": "string",
+				"defaultValue": "D"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "Department.csv"
+			},
+			"schema": {
+				"type": "string",
+				"defaultValue": "NESS"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "DEPARTMENT"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-23T03:19:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

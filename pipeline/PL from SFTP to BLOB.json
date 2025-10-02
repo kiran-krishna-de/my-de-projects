@@ -1,0 +1,168 @@
+{
+	"name": "PL from SFTP to BLOB",
+	"properties": {
+		"activities": [
+			{
+				"name": "SFTP to BLOB",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SFTP",
+						"type": "DatasetReference",
+						"parameters": {
+							"Directory": {
+								"value": "@concat('/',pipeline().parameters.drive,':','/',pipeline().parameters.Source_directory)",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_bolb_param",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.Stage_container",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@pipeline().parameters.Stage_directory",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SFTP to BLOB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_blob_to_snow",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"input_container": {
+							"value": "@pipeline().parameters.Stage_container",
+							"type": "Expression"
+						},
+						"input_directory": {
+							"value": "@pipeline().parameters.Stage_directory",
+							"type": "Expression"
+						},
+						"input_file": {
+							"value": "@pipeline().parameters.FileName",
+							"type": "Expression"
+						},
+						"sink_schema": {
+							"value": "@pipeline().parameters.Schema",
+							"type": "Expression"
+						},
+						"sink_table": {
+							"value": "@pipeline().parameters.table",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Stage_container": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"Stage_directory": {
+				"type": "string",
+				"defaultValue": "stage"
+			},
+			"drive": {
+				"type": "string",
+				"defaultValue": "D"
+			},
+			"Source_directory": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "Department.csv"
+			},
+			"Schema": {
+				"type": "string",
+				"defaultValue": "NESS"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "DEPARTMENT"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-23T03:42:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

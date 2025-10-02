@@ -1,0 +1,11 @@
+{
+	"name": "AKV_krishh",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://krishhh-key-vault.vault.azure.net/"
+		}
+	}
+}

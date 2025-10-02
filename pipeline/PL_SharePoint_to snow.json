@@ -1,0 +1,112 @@
+{
+	"name": "PL_SharePoint_to snow",
+	"properties": {
+		"activities": [
+			{
+				"name": "copy to snow",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "SftpWriteSettings",
+							"operationTimeout": "01:00:00",
+							"useTempFileRename": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Local_FileSystem",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": {
+								"value": "@pipeline().parameters.Source_Directory",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.Source_fileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SFTP",
+						"type": "DatasetReference",
+						"parameters": {
+							"Directory": {
+								"value": "@concat('/',pipeline().parameters.Sink_Drive,':/',pipeline().parameters.Sink_Directory)",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.Sink_FileName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"Source_Directory": {
+				"type": "string",
+				"defaultValue": "sales"
+			},
+			"Source_fileName": {
+				"type": "string",
+				"defaultValue": "BigMart_Sales.csv"
+			},
+			"Sink_Directory": {
+				"type": "string",
+				"defaultValue": "test/omg/sales"
+			},
+			"Sink_FileName": {
+				"type": "string",
+				"defaultValue": "Sales.csv"
+			},
+			"Sink_Drive": {
+				"type": "string",
+				"defaultValue": "D"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-26T14:46:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
