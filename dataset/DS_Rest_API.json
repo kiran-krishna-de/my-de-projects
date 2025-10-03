@@ -9,7 +9,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "?offset={OFFSET}",
+				"value": "?offset={offset}",
 				"type": "Expression"
 			}
 		},
