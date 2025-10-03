@@ -7,7 +7,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Validation if file exists",
+						"activity": "Check if holiday",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -85,14 +85,18 @@
 				]
 			},
 			{
-				"name": "Validation if file exists",
+				"name": "Check if holiday",
 				"type": "Validation",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DS_ADLS_CSV",
-						"type": "DatasetReference"
+						"referenceName": "DS_sql_kiran_param",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "holidays"
+						}
 					},
 					"timeout": "0.12:00:00",
 					"sleep": 2
