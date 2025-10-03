@@ -1,0 +1,56 @@
+{
+	"name": "PL_alert",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Ansh-proj-1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ansh-proj-2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"schema": "source",
+						"table": "orders"
+					}
+				}
+			},
+			{
+				"name": "send mail",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Execute Ansh-proj-1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-09.northcentralus.logic.azure.com:443/workflows/4df2120170b344209b6e4a01a10f1093/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=tfgE6q-O8mHL2T7ytH6H6xBXuUCj3DM5W2USlqlw2Nk",
+					"body": {
+						"value": "{\n    \"pipeline_name\":\"@{pipeline().Pipeline}\",\n    \"run_id\":\"@{concat('https://adf.azure.com/en/authoring/pipeline/',activity('Execute Ansh-proj-1').output.pipelineName,'?factory=%2Fsubscriptions%2Fa71a9271-a8b7-41cc-ad19-ae93a63dea87%2FresourceGroups%2Fkrishna-rg%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2F',pipeline().DataFactory,'&pipelineName=PL%20from%20SFTP%20to%20BLOB')}\",\n    \"run_time\":\"@{utcNow()}\",\n    \"error\":\"error\",\n    \"ADF_Name\":\"@{pipeline().DataFactory}\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
