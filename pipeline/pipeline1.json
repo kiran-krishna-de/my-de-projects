@@ -1,0 +1,79 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "get holidays list",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select * from dbo.holidays",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_sql_kiran_param",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "holidays"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "If not holiday",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "get holidays list",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(activity('get holidays list').output.value[0].holiday_date,formatDateTime(utcNow(),'yyyy-MM-dd'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "if not holiday",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 5
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "if holiday",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 5
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
