@@ -9,9 +9,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@contains(['2025-10-03','2025-10-20'],formatDateTime(utcNow(),'yyyy-MM-dd'))",
+						"value": "@contains(createArray('2025-10-04','2025-10-20'),formatDateTime(utcNow(),'yyyy-MM-dd'))",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Wait2",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 3
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Wait1",
