@@ -5,7 +5,14 @@
 			{
 				"name": "endpoint",
 				"type": "WebActivity",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validation if file exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -45,10 +52,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "GET",
 						"paginationRules": {
-							"QueryParameters.offset": {
-								"value": "RANGE:0:@{activity('endpoint').output.count}:20",
-								"type": "Expression"
-							}
+							"AbsoluteUrl": "$.next"
 						}
 					},
 					"sink": {
@@ -79,6 +83,20 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Validation if file exists",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_ADLS_CSV",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.12:00:00",
+					"sleep": 2
+				}
 			}
 		],
 		"annotations": []
