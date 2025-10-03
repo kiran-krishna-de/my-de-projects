@@ -1,0 +1,10 @@
+I'm part of Data platform project at TCS. In this project we are moving data from 3 different sources (CSV, On-premise-SQL DB, Rest API).
+Destination is synapse analytics. We are using azure data lake as staging layer where medallion architecture is implemented. 
+
+Here at Azure Data lake, we are loading all raw data from source to bronze layer. Here at bronze layer, We are keeping exact replica of what data is there on source in parquet format. So, that it can act as a source of truth for us.
+
+After applying some transformation rules, transformed data is moved to silver layer as a delta tables to enable ACID properties.
+
+After applying gold transformation rules, cleansed data is moving to gold layer as delta tables.
+
+We are creating views based on requirements from downstream stakeholders. So that they can be able to use them for their reporting use case. We are using stored procedures to load/ create all required views at synapse. We are using ADF as orchestrating tool for the whole process. And data bricks for transformations.
